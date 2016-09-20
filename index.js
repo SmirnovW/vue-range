@@ -11,8 +11,8 @@ vueify.compiler.applyConfig({
 	"plugins": ["transform-runtime"]
 });
 
-var mainFile = './src/vuefy/main.js';
-var vueRangeFile = './src/vuefy/components/vue-range.vue';
+var mainFile = './src/vueify/main.js';
+var vueRangeFile = './src/vueify/vue-range.vue';
 
 build(mainFile);
 
@@ -28,6 +28,6 @@ function build(file) {
 	browserify(file)
 		.transform(vueify)
 		.bundle()
-		.pipe(fs.createWriteStream("./build/bundle.js"));
+		.pipe(fs.createWriteStream("./build/build.js"));
 }
 
