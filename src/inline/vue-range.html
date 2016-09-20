@@ -1,0 +1,8 @@
+<vue-range :min="6" :max="100" :step="10" :value="0">
+	<div class="vue-range">
+		<div class="vue-range__rail" v-el:rail>
+			<div class="vue-range__fill" v-bind:style="fillStyleObject"></div>
+			<div class="vue-range__slider" v-el:slider v-bind:style="sliderStyleObject" @mousedown="mouseDownHandler"></div>
+		</div>
+	</div>
+</vue-range>
