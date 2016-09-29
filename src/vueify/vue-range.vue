@@ -42,7 +42,7 @@
 
 <template>
 	<div class="vue-range">
-		<div class="vue-range__rail" v-el:rail>
+		<div class="vue-range__rail" v-el:rail @click="clickOnRail">
 			<div class="vue-range__fill" v-bind:style="fillStyleObject"></div>
 			<div class="vue-range__slider" v-el:slider v-bind:style="sliderStyleObject" @mousedown="mouseDownHandler"></div>
 		</div>
@@ -84,19 +84,24 @@ export default {
 		}
 	},
 	methods: {
+		clickOnRail(event) {
+			this.positionX = this._getPositionX(event.pageX);
+			var newPositionX = this.stepInPixels * Math.ceil(this.positionX / this.stepInPixels);
+			this.prevStep = newPositionX - this.stepInPixels;
+			this.nextStep = newPositionX + this.stepInPixels;
+			
+			this._setPositionX(newPositionX);
+		},
 		mouseDownHandler(event) {
-			Vue.util.on(window, 'mousemove', this.mouseMoveHandler);
-			Vue.util.on(window, 'mouseup', this.removeMouseMoveHandler);
+			window.addEventListener('mousemove', this.mouseMoveHandler);
+			window.addEventListener('mouseup', this.removeMouseMoveHandler);
 		},
 
 		mouseMoveHandler() {
 			var lastPositionX = this.positionX;
 			var newPositionX = 0;
 
-			this.positionX = Math.min(
-				Math.max(0, (event.pageX - this.$el.offsetLeft)  - (this.$els.slider.offsetWidth / 2)),
-				this.$els.rail.offsetWidth - this.$els.slider.offsetWidth
-			);
+			this.positionX = this._getPositionX(event.pageX);
 
 			if (this.step > 0) {
 				newPositionX = this._calculatePositionByStep(lastPositionX);
@@ -105,16 +110,27 @@ export default {
 			}
 
 			if (newPositionX != null) {
-				this.sliderStyleObject.left = newPositionX + 'px';
-				this.fillStyleObject.width = this.sliderStyleObject.left;
-				this.$dispatch('vue-range:value-changed', this._getValueInPercent(newPositionX));
+				this._setPositionX(newPositionX);
 			}
 		},
 
 		removeMouseMoveHandler() {
-			Vue.util.off(window, 'mousemove', this.mouseMoveHandler);
-			Vue.util.off(window, 'mouseup', this.removeMouseMoveHandler);
+			window.removeEventListener('mousemove', this.mouseMoveHandler);
+			window.removeEventListener('mouseup', this.removeMouseMoveHandler);
 			this.isActive = false;
+		},
+
+		_getPositionX(pageX) {
+			return Math.min(
+				Math.max(0, (pageX - this.$el.offsetLeft)  - (this.$els.slider.offsetWidth / 2)),
+				this.$els.rail.offsetWidth - this.$els.slider.offsetWidth
+			);
+		},
+
+		_setPositionX(x) {
+			this.sliderStyleObject.left = x + 'px';
+			this.fillStyleObject.width = this.sliderStyleObject.left;
+			this.$dispatch('vue-range:value-changed', this._getValueInPercent(x));
 		},
 
 		_getValueInPercent(positionX) {

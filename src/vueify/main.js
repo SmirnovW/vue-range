@@ -1,17 +1,2 @@
-var Vue = require('vue'),
-	vueRange = require('./vue-range.vue');
-
-new Vue({
-	el: '#app',
-	data: {
-		value: 0
-	},
-	components: {
-		'vue-range': vueRange
-	},
-	events: {
-		'vue-range:value-changed'(value) {
-			this.value = value;
-		}
-	}
-})
+var vueRange = require('./vue-range.vue');
+Vue.component('vue-range', Vue.extend(vueRange));
