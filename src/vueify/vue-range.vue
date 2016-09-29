@@ -50,7 +50,6 @@
 </template>
 
 <script>
-var Vue = require('vue');
 export default {
 	props: {
 		min: {
