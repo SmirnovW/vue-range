@@ -17,7 +17,7 @@ Vue.component('vue-range', Vue.extend({
 			default: 50,
 		}
 	},
-	data() {
+	data: function () {
 		return {
 			positionX: 0,
 			prevStep: 0,
@@ -32,12 +32,12 @@ Vue.component('vue-range', Vue.extend({
 		}
 	},
 	methods: {
-		mouseDownHandler(event) {
+		mouseDownHandler: function (event) {
 			Vue.util.on(window, 'mousemove', this.mouseMoveHandler);
 			Vue.util.on(window, 'mouseup', this.removeMouseMoveHandler);
 		},
 
-		mouseMoveHandler() {
+		mouseMoveHandler: function () {
 			var lastPositionX = this.positionX;
 			var newPositionX = 0;
 
@@ -59,19 +59,19 @@ Vue.component('vue-range', Vue.extend({
 			}
 		},
 
-		removeMouseMoveHandler() {
+		removeMouseMoveHandler: function () {
 			Vue.util.off(window, 'mousemove', this.mouseMoveHandler);
 			Vue.util.off(window, 'mouseup', this.removeMouseMoveHandler);
 			this.isActive = false;
 		},
 
-		_getValueInPercent(positionX) {
+		_getValueInPercent: function (positionX) {
 			return Math.round(
 				positionX / (this.$els.rail.offsetWidth - this.$els.slider.offsetWidth)
 			 * 100);
 		},
 
-		_calculatePositionByStep(lastPositionX) {
+		_calculatePositionByStep: function (lastPositionX) {
 			if (this.positionX <= Math.floor(this.prevStep) || this.positionX >= Math.ceil(this.nextStep)) {
 				if (lastPositionX < this.positionX) {
 					this.prevStep = this.nextStep - this.stepInPixels;
@@ -86,13 +86,11 @@ Vue.component('vue-range', Vue.extend({
 			return null;
 		}
 	},
-	ready() {
-
+	ready: function () {
 		this.stepInPixels = (this.$els.rail.offsetWidth - this.$els.slider.offsetWidth) / 100 * Math.min(this.step, 100);
 		this.nextStep = this.value > 0 ? this.stepInPixels * 2 : this.stepInPixels;
 
 		this.sliderStyleObject.left = (this.$els.rail.offsetWidth - this.$els.slider.offsetWidth) / 100 * Math.min(this.value, 100) + 'px';
 		this.fillStyleObject.width = this.sliderStyleObject.left;
-
 	}
 }));
